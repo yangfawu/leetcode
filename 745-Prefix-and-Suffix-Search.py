@@ -37,14 +37,13 @@ class WordTree:
         # iterate through the tree
         node = self.root
         for c in prefix:
-            # return None on first instance of no letter found
+            # return root on first instance of no letter found
             if not node.has(c):
-                return None
+                return self.root
             node = node.get(c)
         return node
     
 class WordFilter:
-
     def __init__(self, words: List[str]):
         # create 2 roots
         # 1 for prefix searching
@@ -60,17 +59,13 @@ class WordFilter:
         # find letter nodes of prefix and suffix
         a = self.start.find_node(prefix)
         b = self.end.find_node(suffix[::-1])
-        if a == None or b == None:
-            return -1
         
         # find all common word references between prefix and suffix node
-        common_refs = list(a.refs & b.refs)
-        if len(common_refs) < 1:
-            return -1
-        
         # get biggest index
-        common_refs.sort()
-        return common_refs[-1]
+        # default is -1 if no common found
+        common_refs = a.refs & b.refs
+        common_refs.add(-1)
+        return max(common_refs)
 
 # Your WordFilter object will be instantiated and called as such:
 # obj = WordFilter(words)
