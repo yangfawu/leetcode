@@ -16,39 +16,24 @@ class LetterNode:
         self.children[c] = child
         return child
     
-    def store(self, i: int):
+    def add_ref(self, i: int):
         self.refs.add(i)
         
 class WordTree:
     def __init__(self):
-        self.counter = 0
-        self.refs = {}
         self.root = LetterNode()
         
     def add(self, word: str, rep: int) -> "LetterNode":
-        if len(word) < 1:
-            return None
-        
-        # create a mapping between the counter and rep
-        self.refs[self.counter] = rep
-        
         # iterate through the tree with each letter sequentially
         node = self.root
         for c in word:
             node = node.get(c)
-            
             # store word reference into each node
-            node.store(self.counter)
-            
-        # increment counter for future word
-        self.counter+= 1
+            node.add_ref(rep)
         
         return node
     
-    def findNode(self, prefix: str) -> "LetterNode":
-        if len(prefix) < 1:
-            return None
-        
+    def find_node(self, prefix: str) -> "LetterNode":
         # iterate through the tree
         node = self.root
         for c in prefix:
@@ -57,12 +42,6 @@ class WordTree:
                 return None
             node = node.get(c)
         return node
-    
-    def translateRefs(self, node: "LetterNode") -> Set[int]:
-        # node.refs does not actually contain the word indexes
-        # the word indexes were replaced with different counter IDs assigned by the tree
-        # this translate the tree IDs back into the original word indexes
-        return set([self.refs[i] for i in list(node.refs)])
     
 class WordFilter:
 
@@ -79,15 +58,13 @@ class WordFilter:
     @cache
     def f(self, prefix: str, suffix: str) -> int:
         # find letter nodes of prefix and suffix
-        a = self.start.findNode(prefix)
-        b = self.end.findNode(suffix[::-1])
+        a = self.start.find_node(prefix)
+        b = self.end.find_node(suffix[::-1])
         if a == None or b == None:
             return -1
         
         # find all common word references between prefix and suffix node
-        a_refs = self.start.translateRefs(a)
-        b_refs = self.end.translateRefs(b)
-        common_refs = list(a_refs & b_refs)
+        common_refs = list(a.refs & b.refs)
         if len(common_refs) < 1:
             return -1
         
