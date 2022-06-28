@@ -61,8 +61,7 @@ class Solution:
                 continue
             
             # new_f -> new frequency of decremented letters
-            # new_c -> # of l
-            etters decremented
+            # new_c -> # of letters decremented
             new_f, new_c = f - 1, c - 1
             total+= new_c
             
@@ -81,4 +80,3 @@ class Solution:
                 pq.add(new_f)
         
         return total
-        
