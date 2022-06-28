@@ -29,7 +29,7 @@ class Heap:
         return self.arr[0]
     
     def max(self) -> int:
-        return self.arr[-1)
+        return self.arr[-1]
     
     def pop_min(self) -> int:
         return self.arr.pop(0)
